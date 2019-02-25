@@ -12,13 +12,13 @@ def executar_db(query):
 
     """Conectar-se ao banco de dados, e executar a pesquisa
     retornando os resultados"""
-
-    db = psycopg2.connect('dbname=' + DBNAME)
-except psycopg2.Error as e:
-    print("Unable to connect to the database")
-    print(e.pgerror)
-    print(e.diag.message_detail)
-    sys.exit(1)
+    try:
+        db = psycopg2.connect('dbname=' + DBNAME)
+    except psycopg2.Error as e:
+        print("Unable to connect to the database")
+        print(e.pgerror)
+        print(e.diag.message_detail)
+        sys.exit(1)
 
     c = db.cursor()
 
