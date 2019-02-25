@@ -1,4 +1,4 @@
-# !/usr/bin/env python2
+#!/usr/bin/env python2
 
 # Importar psycopg2 para conectar-se ao Database
 import psycopg2
@@ -13,6 +13,11 @@ def executar_db(query):
     retornando os resultados"""
 
     db = psycopg2.connect('dbname=' + DBNAME)
+except psycopg2.Error as e:
+    print("Unable to connect to the database")
+    print(e.pgerror)
+    print(e.diag.message_detail)
+    sys.exit(1)
 
     c = db.cursor()
 
@@ -123,7 +128,8 @@ def dias_com_mais_de_1_por_cento_de_erro():
 
     results = executar_db(query)
 
-    # Função para imprimir os resultados de 'def dias_com_mais_de_1_por_cento_de_erro()':
+    # Função para imprimir os resultados de:
+    # 'def dias_com_mais_de_1_por_cento_de_erro()':
 
     print('Em quais dias mais de 1% das requisições resultaram'
           'em erros? \n')
