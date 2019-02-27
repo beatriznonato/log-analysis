@@ -37,13 +37,12 @@ def artigos_mais_visualizados():
 
     # Construindo a query
     query = """
-        SELECT articles.title, COUNT(*) AS num
-        FROM articles
-        JOIN log
-        ON log.path LIKE concat('/article/%', articles.slug)
-        GROUP BY articles.title
-        ORDER BY num DESC
-        LIMIT 3;
+        select articles.title, count(log.path) as num
+        from log join articles
+        on log.path = CONCAT('/article/', articles.slug) where 
+        log.status = '200 OK' 
+        group by articles.title 
+        order by num Desc limit 3;
     """
 
     # Executando a query
@@ -73,15 +72,13 @@ def autores_mais_populares():
 
     # Construindo a query
     query = """
-        SELECT authors.name, COUNT(*) AS num
-        FROM authors
-        JOIN articles
-        ON authors.id = articles.author
-        JOIN log
-        ON log.path like concat('/article/%', articles.slug)
-        GROUP BY authors.name
-        ORDER BY num DESC
-        LIMIT 3;
+        select authors.name, count(log.path) as num
+        from articles join authors
+        on articles.author = authors.id
+        join log on log.path like CONCAT('/article/', articles.slug) where
+        log.status = '200 OK'
+        group by authors.name
+        order by num Desc limit 3;
     """
 
     # Executando a query
@@ -107,22 +104,12 @@ def dias_com_mais_de_1_por_cento_de_erro():
     # Construindo a query
 
     query = """
-        SELECT total.day,
-          ROUND(((errors.error_requests*1.0) / total.requests), 3) AS percent
-        FROM (
-          SELECT date_trunc('day', time) "day", count(*) AS error_requests
-          FROM log
-          WHERE status LIKE '404%'
-          GROUP BY day
-        ) AS errors
-        JOIN (
-          SELECT date_trunc('day', time) "day", count(*) AS requests
-          FROM log
-          GROUP BY day
-          ) AS total
-        ON total.day = errors.day
-        WHERE (ROUND(((errors.error_requests*1.0) / total.requests), 3) > 0.01)
-        ORDER BY percent DESC;
+        select to_char(time::date, 'Month DD,YYYY'),
+        (count(case when status != '200 OK' then 1 end)*100)::float/
+        count(*) as num from log 
+        group by time::date 
+        order by num desc limit 1;
+        
     """
 
     # Executando a query
@@ -137,9 +124,9 @@ def dias_com_mais_de_1_por_cento_de_erro():
 
     for i in results:
 
-        date = i[0].strftime('%B %d, %Y')
+        date = i[0]
 
-        errors = str(round(i[1]*100, 1)) + "%" + " erros"
+        errors = str(round(i[1], 1)) + "%" + " erros"
 
         print(date + " -- " + errors)
 
