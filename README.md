@@ -1,4 +1,4 @@
-# Análise de Log
+# Log Analysis
 
 ![pep8](https://img.shields.io/badge/pep8online-compliant-green.svg)
 
