@@ -1,4 +1,4 @@
-# Log Analysis
+# Log Analysis :receipt:
 
 ![pep8](https://img.shields.io/badge/pep8online-compliant-green.svg)
 
@@ -52,4 +52,4 @@ that the news site sent to the user's browser
 4. In GitBash run the ``python analise_logs.py`` command to perform the parsing.
   
 ### License
-MIT © Beatriz Nonato
+MIT © Beatriz Nonato :woman_technologist:
